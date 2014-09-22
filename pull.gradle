@@ -14,11 +14,12 @@ import org.ajoberstar.gradle.git.tasks.*
 
 def mavenRepoDir = "file://$System.env.MVN_REPO";
 
+ext.isExternalRepoAvailable = mavenRepoDir != null ? true : false
 
 
 repositories {
     maven {
-        url "file://$System.env.MVN_REPO"
+        url mavenRepoDir
     }
     mavenCentral()
 }
