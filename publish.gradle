@@ -1,0 +1,51 @@
+apply plugin: "maven"
+
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'org.ajoberstar:gradle-git:0.6.3'
+    }
+}
+
+
+import org.ajoberstar.gradle.git.tasks.*
+
+
+def mavenRepoDir = "file://$System.env.MVN_REPO";
+
+uploadArchives {
+    repositories.mavenDeployer {
+        repository(url: "file://$System.env.MVN_REPO")
+        pom.version = project.version
+        pom.groupId = project.group
+        pom.artifactId = project.name
+    }
+}
+
+task cleanMavenRepo(type: GitClean,description: 'Cleans the local release repo', group: 'Publish') {
+    repoPath = mavenRepoDir
+}
+
+uploadArchives.dependsOn cleanMavenRepo
+
+task addArchivesToMavenRepo(dependsOn: uploadArchives,type: GitAdd,description: 'Stages the published files', group: 'Publish') {
+    repoPath = mavenRepoDir
+}
+
+task commitToMavenRepo(dependsOn: addArchivesToMavenRepo, type: GitCommit,description: 'Commits staged files to the release repo', group: 'Publish') {
+    repoPath = mavenRepoDir
+
+    message = "Release ${project.name} ${project.version}"
+    commitAll = true
+}
+
+task pushMavenRepoToRemote(dependsOn: commitToMavenRepo, type: GitPush,description: 'Pushes all local commits to the remote release repo', group: 'Publish') {
+    repoPath = mavenRepoDir
+    remote = "git@bitbucket.org:dengler/mvn-repo.git"
+}
+
+
+task publishArchives(dependsOn: pushMavenRepoToRemote, description: 'Publishes to the remote release repo', group: 'Publish')
+

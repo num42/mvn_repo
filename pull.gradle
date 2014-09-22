@@ -1,0 +1,31 @@
+
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'org.ajoberstar:gradle-git:0.6.3'
+    }
+}
+
+
+import org.ajoberstar.gradle.git.tasks.*
+
+
+def mavenRepoDir = "file://$System.env.MVN_REPO";
+
+
+
+repositories {
+    maven {
+        url "file://$System.env.MVN_REPO"
+    }
+    mavenCentral()
+}
+
+
+task refreshMavenRepo(type: GitPull) {
+    repoPath = mavenRepoDir
+}
+
+preBuild.dependsOn refreshMavenRepo
