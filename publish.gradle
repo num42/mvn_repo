@@ -17,7 +17,7 @@ def mavenRepoDir = "file://$System.env.MVN_REPO";
 
 uploadArchives {
     repositories.mavenDeployer {
-        repository(url: "file://$System.env.MVN_REPO")
+        repository(url: mavenRepoDir)
         pom.version = project.version
         pom.groupId = project.group
         pom.artifactId = project.name
@@ -43,7 +43,6 @@ task commitToMavenRepo(dependsOn: addArchivesToMavenRepo, type: GitCommit,descri
 
 task pushMavenRepoToRemote(dependsOn: commitToMavenRepo, type: GitPush,description: 'Pushes all local commits to the remote release repo', group: 'Publish') {
     repoPath = mavenRepoDir
-    remote = "git@bitbucket.org:dengler/mvn-repo.git"
 }
 
 
