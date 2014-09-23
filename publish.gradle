@@ -37,7 +37,7 @@ task addArchivesToMavenRepo(dependsOn: uploadArchives,type: GitAdd,description: 
 task commitToMavenRepo(dependsOn: addArchivesToMavenRepo, type: GitCommit,description: 'Commits staged files to the release repo', group: 'Publish') {
     repoPath = mavenRepoDir
 
-    message = "Release ${project.name} ${project.version}"
+    message = "Release ${project.group} ${project.name} ${project.version}"
     commitAll = true
 }
 
