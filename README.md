@@ -22,5 +22,5 @@ android {
     }
 )
 
-* use the gradle task addArchivesToMavenRepo to add it locally
-* use the gradle task publishArchives to push all local archives to the remote repository
+* use the gradle task publishArchiveToLocalMavenRepo to add it locally
+* use the gradle task pushToRemoteMavenRepo to push all local archives to the remote repository

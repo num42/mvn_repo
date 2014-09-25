@@ -4,29 +4,29 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'org.ajoberstar:gradle-git:0.6.3'
+        classpath 'org.ajoberstar:gradle-git:0.10.1'
     }
 }
 
+import org.ajoberstar.grgit.*
 
-import org.ajoberstar.gradle.git.tasks.*
 
-
-def mavenRepoDir = "file://$System.env.MVN_REPO";
+def mavenRepoDir = "$System.env.MVN_REPO";
+ext.repo = Grgit.open(mavenRepoDir)
 
 ext.isExternalRepoAvailable = mavenRepoDir != null ? true : false
 
 
 repositories {
     maven {
-        url mavenRepoDir
+        url "file://"+mavenRepoDir
     }
     mavenCentral()
 }
 
 
-task refreshMavenRepo(type: GitPull) {
-    repoPath = mavenRepoDir
+task refreshMavenRepo << {
+    repo.pull()
 }
 
 preBuild.dependsOn refreshMavenRepo
